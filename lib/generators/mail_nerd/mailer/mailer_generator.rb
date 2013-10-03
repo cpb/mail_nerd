@@ -1,7 +1,8 @@
 class MailNerd::MailerGenerator < Rails::Generators::NamedBase
   source_root File.expand_path('../templates', __FILE__)
 
-  argument :name, type: :string, banner: 'name'
+  argument :name, type: :string, banner: 'class name'
+  argument :template_name, type: :string, banner: 'template name'
 
   def create_mailer
     template "mailer_class.rb", "app/mailers/#{mailer_file_name}.rb"
@@ -23,10 +24,6 @@ class MailNerd::MailerGenerator < Rails::Generators::NamedBase
 
   def template_slug
     template_name.gsub(' ','-')
-  end
-
-  def template_name
-    "Group Invite"
   end
 
   def translation_key(leaf="subject")
