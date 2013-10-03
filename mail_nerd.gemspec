@@ -17,6 +17,7 @@ Gem::Specification.new do |s|
 
   s.add_dependency "highline", "~> 1.6"
   s.add_dependency "rails", "~> 4.0.0"
+  s.add_dependency "nokogiri", "~> 1.6"
   s.add_dependency "mandrill_mailer", "~> 0.4"
   s.add_development_dependency "aruba", "~> 0.5"
   s.add_development_dependency "cucumber-rails", "~> 1.4"

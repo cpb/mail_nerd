@@ -1,3 +1,6 @@
+require 'nokogiri'
+require 'mandrill'
+
 class MailNerd::MailerGenerator < Rails::Generators::NamedBase
   source_root File.expand_path('../templates', __FILE__)
 
@@ -9,6 +12,22 @@ class MailNerd::MailerGenerator < Rails::Generators::NamedBase
   end
 
   private
+  def api_key
+    @api_key ||= ENV['MANDRILL_APIKEY'] ||= (
+      begin
+        MAIL_NERD_CONFIG[:password]
+      rescue NameError => e
+        nil
+      end )
+  end
+
+  def mandrill
+    @mandril ||= Mandrill::API.new(api_key)
+  end
+
+  def mandrill_template
+    @template_response ||= mandrill.templates.info(template_slug)
+  end
 
   def mailer_file_name
     name.underscore
@@ -31,20 +50,27 @@ class MailNerd::MailerGenerator < Rails::Generators::NamedBase
   end
 
   def default_from
-    "invitor@example.com"
+    mandrill_template["from_email"]
   end
 
   def default_name
-    "Invitigat0r"
+    mandrill_template["from_name"]
   end
 
   def default_subject
-    "Default subject for U"
+    mandrill_template["subject"]
+  end
+
+  def code
+    @parsed ||= Nokogiri.parse(mandrill_template["code"])
   end
 
   def vars
-    [
-      OpenStruct.new(argument: 'my_region',symbol: :my_region,default: 'foobar',option_key: :my_region.inspect)
-    ]
+    code.xpath("//*[@*]").map do |e|
+      name    = e.attributes["mc:edit"].value
+      default = e.text
+
+      OpenStruct.new(argument: name,symbol: name.to_sym,default: default,option_key: name.to_sym.inspect)
+    end
   end
 end
