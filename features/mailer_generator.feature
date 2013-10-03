@@ -11,36 +11,36 @@ Feature: Mailer Generator
     And I configure mail_nerd for Mandrill
 
   Scenario: Generating a Mandrill Mailer
-    Given the Mandrill template "Group Invite" is:
+    Given the Mandrill template "Pant Review" is:
     """yaml
     ---
-    from_email: invitor@example.com
-    from_name: Invitigat0r
-    subject: Default subject for U
+    from_email: Chuck@Headwig.com
+    from_name: Chuck Headwig
+    subject: Love your pants man!
     code: |
-      <div mc:edit="my_region">foobar</div>
+      <p mc:edit="pant_review">They're swell</p>
     publish: false
     """
-    When I successfully run `bundle exec rails g mail_nerd:mailer Invitations 'Group Invite'`
-    Then the file "app/mailers/invitations.rb" should contain exactly:
+    When I successfully run `bundle exec rails g mail_nerd:mailer Reviews 'Pant Review'`
+    Then the file "app/mailers/reviews.rb" should contain exactly:
     """ruby
-    class Invitations < MandrillMailer::TemplateMailer
-      default from:      "invitor@example.com",
-              from_name: "Invitigat0r"
+    class Reviews < MandrillMailer::TemplateMailer
+      default from:      "Chuck@Headwig.com",
+              from_name: "Chuck Headwig"
 
-      def group_invite(my_region="foobar", recipients=[{email: "guest@honor.com", name: 'Honored Guest'}])
-        mandrill_mail template: "Group Invite",
-          subject: I18n.t("invitations.group_invite.subject", default: "Default subject for U"),
+      def pant_review(pant_review="They're swell", recipients=[{email: "guest@honor.com", name: 'Honored Guest'}])
+        mandrill_mail template: "Pant Review",
+          subject: I18n.t("reviews.pant_review.subject", default: "Love your pants man!"),
           to: recipients,
           vars: {
-            my_region: my_region
+            pant_review: pant_review
           },
           important: true,
           inline_css: true
       end
 
-      test_setup_for group_invite do |mailer, options|
-        mailer.group_invite(*options.values_at(:my_region), [options.select{|k| [:name,:email].include?(k)}]).deliver
+      test_setup_for :pant_review do |mailer, options|
+        mailer.pant_review(*options.values_at(:pant_review), [options.select{|k| [:name,:email].include?(k)}]).deliver
       end
     end
 
