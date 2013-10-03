@@ -8,5 +8,9 @@ rescue => e
 end
 
 MandrillMailer.configure do |config|
-  config.api_key = ENV['MANDRILL_APIKEY'] ||= MAIL_NERD_CONFIG[:password]
+  begin
+    config.api_key = ENV['MANDRILL_APIKEY'] ||= MAIL_NERD_CONFIG[:password]
+  rescue => e
+    warn "You haven't configured mail_nerd for #{Rails.env} or through ENV"
+  end
 end
