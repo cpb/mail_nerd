@@ -28,7 +28,7 @@ At this time, your options are:
 Now, from the Rails project you've installed this engine in, use the ```mail_nerd:configure``` rake task. It will prompt you through setting up your mail_nerd configuration.
 
 ```bash
-$ rake mail_nerd:configure
+$ rake mail_nerd:config
 > What's the host of the service? smtp.mandrillapp.com
 > What's the port of the service? 587
 > What's your username for the service? # Usually the email of the account you signed up with.
