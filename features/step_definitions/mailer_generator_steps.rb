@@ -1,18 +1,18 @@
 Given(/^the Mandrill template "(.*?)" is:$/) do |name, code|
+  case code.content_type
+  when "yaml"
+    from_email,from_name,subject,text,publish,code = YAML::load(code).values_at("from_email","from_name","subject","text","publish","code")
+  when "xml"
+    code = code
+  end
+
+  from_email ||= "from_email@example.com"
+  from_name  ||= "Example Name"
+  subject    ||= "example subject"
+  text       ||= "example text"
+  publish    ||= false
+
   begin
-    case code.content_type
-    when "yaml"
-      from_email,from_name,subject,text,publish,code = YAML::load(code).values_at("from_email","from_name","subject","text","publish","code")
-    when "xml"
-      code = code
-    end
-
-    from_email ||= "from_email@example.com"
-    from_name  ||= "Example Name"
-    subject    ||= "example subject"
-    text       ||= "example text"
-    publish    ||= false
-
     result = mandrill.templates.add name, from_email, from_name, subject, code, text, publish
 
     register_template_for_cleanup(result)
@@ -20,6 +20,7 @@ Given(/^the Mandrill template "(.*?)" is:$/) do |name, code|
   rescue Mandrill::InvalidTemplateError => e
     warn e.message
   rescue Excon::Errors::SocketError => e
+    sleep debug("Excon::Errors::SocketError",".")
     retry
   end
 end

@@ -54,7 +54,9 @@ require 'mandrill'
 
 $:.unshift(File.dirname(__FILE__))
 require 'mandrill_integration_helpers'
-World(MandrillIntegrationHelpers)
+require 'debug_helpers'
+World(MandrillIntegrationHelpers,DebugHelpers)
 
 Before(&MandrillIntegrationHelpers::Before)
+Before(&DebugHelpers::Before)
 After( &MandrillIntegrationHelpers::After)
