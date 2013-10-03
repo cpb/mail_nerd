@@ -10,21 +10,27 @@ Feature: Mailer Generator
     And I run `bundle install`
     And I configure mail_nerd for Mandrill
 
-  @naughty
   Scenario: Generating a Mandrill Mailer
     Given the Mandrill template "Group Invite" is:
-    """xml
-    <div mc:edit="my_region">foobar</div>
+    """yaml
+    ---
+    from_email: invitor@example.com
+    from_name: Invitigat0r
+    subject: Default subject for U
+    code: |
+      <div mc:edit="my_region">foobar</div>
+    publish: false
     """
-    When I successfully run `bundle exec rails g mail_nerd:mailer Invitations invitor@example.com 'Group Invite'`
+    When I successfully run `bundle exec rails g mail_nerd:mailer Invitations 'Group Invite'`
     Then the file "app/mailers/invitations.rb" should contain exactly:
     """ruby
-    class InvitationMailer < MandrillMailer::TemplateMailer
-      default from: 'support@example.com'
+    class Invitations < MandrillMailer::TemplateMailer
+      default from: 'invitor@example.com',
+              name: 'Invitigat0r'
 
-      def group_invite(my_region="foobar", recipients=[{email: invitation.email, name: 'Honored Guest'}])
+      def group_invite(my_region="foobar", recipients=[{email: "guest@honor.com", name: 'Honored Guest'}])
         mandrill_mail template: 'Group Invite',
-          subject: I18n.t('invitation_mailer.group_invite.subject'),
+          subject: I18n.t('invitation_mailer.group_invite.subject', default: "Default subject for U"),
           to: recipients,
           vars: {
             my_region: my_region
