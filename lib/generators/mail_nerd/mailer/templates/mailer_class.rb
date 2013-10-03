@@ -1,14 +1,21 @@
 class <%= mailer_class_name %> < MandrillMailer::TemplateMailer
-  default from: 'support@example.com'
+  default from:      <%= default_from.inspect %>,
+          from_name: <%= default_name.inspect %>
 
-  def group_invite(my_region="foobar", recipients=[{email: invitation.email, name: 'Honored Guest'}])
-    mandrill_mail template: 'Group Invite',
-      subject: I18n.t('invitation_mailer.group_invite.subject'),
+  def group_invite(<%= vars.map{|v| "#{v.argument}=#{v.default.inspect}"}.join(', ') %>, recipients=[{email: "guest@honor.com", name: 'Honored Guest'}])
+    mandrill_mail template: <%= template_name.inspect %>,
+      subject: I18n.t(<%= translation_key('subject').inspect %>, default: <%= default_subject.inspect %>),
       to: recipients,
       vars: {
-        my_region: my_region
-      },
+    <% vars.each do |var| -%>
+    <%= var.symbol %>: <%= var.argument %>
+    <% end -%>
+  },
       important: true,
       inline_css: true
+  end
+
+  test_setup_for <%= template_method_name.to_sym %> do |mailer, options|
+    mailer.<%= template_method_name %>(*options.values_at(<%= vars.map(&:option_key).join(', ') %>), [options.select{|k| [:name,:email].include?(k)}]).deliver
   end
 end

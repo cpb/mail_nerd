@@ -25,12 +25,12 @@ Feature: Mailer Generator
     Then the file "app/mailers/invitations.rb" should contain exactly:
     """ruby
     class Invitations < MandrillMailer::TemplateMailer
-      default from: 'invitor@example.com',
-              name: 'Invitigat0r'
+      default from:      "invitor@example.com",
+              from_name: "Invitigat0r"
 
       def group_invite(my_region="foobar", recipients=[{email: "guest@honor.com", name: 'Honored Guest'}])
-        mandrill_mail template: 'Group Invite',
-          subject: I18n.t('invitation_mailer.group_invite.subject', default: "Default subject for U"),
+        mandrill_mail template: "Group Invite",
+          subject: I18n.t("invitations.group_invite.subject", default: "Default subject for U"),
           to: recipients,
           vars: {
             my_region: my_region
@@ -38,5 +38,10 @@ Feature: Mailer Generator
           important: true,
           inline_css: true
       end
+
+      test_setup_for group_invite do |mailer, options|
+        mailer.group_invite(*options.values_at(:my_region), [options.select{|k| [:name,:email].include?(k)}]).deliver
+      end
     end
+
     """
