@@ -66,4 +66,6 @@ MandrillIntegrationHelpers::Before.each do |match,block|
 end
 
 Before(&DebugHelpers::Before)
-After( &MandrillIntegrationHelpers::After)
+
+After(&DebugHelpers::After)
+After(&MandrillIntegrationHelpers::After)

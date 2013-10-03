@@ -13,4 +13,11 @@ module DebugHelpers
   Before = lambda do |scenario|
     @debugs = {}
   end.freeze
+
+  After = lambda do |scenario|
+    if scenario.failed? && !!ENV['DEBUG']
+      require 'pry'
+      binding.pry
+    end
+  end.freeze
 end
