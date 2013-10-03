@@ -25,17 +25,23 @@ module MandrillIntegrationHelpers
     @mandrill
   end
 
-  Before = lambda do |scenario|
+  Before = {
+    "@no-clobber" => lambda { |scenario| @no_clobber = true },
+    nil => lambda do |scenario|
     @mandrill = with_mandrill_api_key do |api_key|
       Mandrill::API.new(api_key)
     end
 
+    @no_clobber ||= !!ENV['NO_CLOBBER']
+
     @templates_for_cleanup = Set.new
-  end.freeze
+  end}.freeze
 
   After = lambda do |scenario|
-    @templates_for_cleanup.each do |slug|
-      mandrill.templates.delete slug
+    unless @no_clobber || scenario.failed?
+      @templates_for_cleanup.each do |slug|
+        mandrill.templates.delete slug
+      end
     end
   end.freeze
 end

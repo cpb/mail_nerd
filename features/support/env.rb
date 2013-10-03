@@ -57,6 +57,13 @@ require 'mandrill_integration_helpers'
 require 'debug_helpers'
 World(MandrillIntegrationHelpers,DebugHelpers)
 
-Before(&MandrillIntegrationHelpers::Before)
+MandrillIntegrationHelpers::Before.each do |match,block|
+  if match
+    Before(match,&block)
+  else
+    Before(&block)
+  end
+end
+
 Before(&DebugHelpers::Before)
 After( &MandrillIntegrationHelpers::After)
