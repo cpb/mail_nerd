@@ -16,7 +16,7 @@ Gem::Specification.new do |s|
   s.files = Dir["{app,config,db,lib}/**/*", "MIT-LICENSE", "Rakefile", "README.rdoc"]
 
   s.add_dependency "highline", "~> 1.6"
-  s.add_dependency "rails", "~> 4.0.0"
+  s.add_dependency "rails", "~> 3.0.20"
   s.add_dependency "nokogiri", "~> 1.6"
   s.add_dependency "mandrill_mailer", "~> 0.4"
   s.add_development_dependency "aruba", "~> 0.5"
