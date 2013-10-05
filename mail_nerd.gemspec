@@ -12,6 +12,7 @@ Gem::Specification.new do |s|
   s.homepage    = "https://github.com/cpb/mail_nerd"
   s.summary     = "Take care of the custom email release and delivery cycle."
   s.description = "So you don't have to."
+  s.license     = "MIT"
 
   s.files = Dir["{app,config,db,lib}/**/*", "MIT-LICENSE", "Rakefile", "README.rdoc"]
 
