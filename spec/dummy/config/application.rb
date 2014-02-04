@@ -7,7 +7,7 @@ require "action_mailer/railtie"
 # require "sprockets/railtie"
 require "rails/test_unit/railtie"
 
-Bundler.require(*Rails.groups)
+Bundler.require(:default, Rails.env.to_sym)
 require "mail_nerd"
 
 module Dummy

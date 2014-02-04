@@ -1,5 +1,9 @@
 module MailNerd
   class Engine < ::Rails::Engine
-    isolate_namespace MailNerd
+    begin
+      isolate_namespace MailNerd
+    rescue NoMethodError => e
+      warn "how to isolate namespace?"
+    end
   end
 end
